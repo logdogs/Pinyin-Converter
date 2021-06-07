@@ -1,3 +1,6 @@
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+
 public class tests {
     
     backend back = new backend();
@@ -12,8 +15,8 @@ public class tests {
         }
     }
 
-    //
-    public void testConversions() {
+    // PASSED
+    public void testSingleConversions() {
         // Should print:
         /**
          * zhōng
@@ -28,5 +31,14 @@ public class tests {
         for (String test : tests) {
             System.out.printf("%s\n", back.convertSyllable(test));
         }
+    }
+
+    //
+    public void testConvert() {
+        String output = back.convert("tai2wan1 shi4 di4 yi1 ge");
+        try {
+            System.setOut(new PrintStream(System.out, true, "UTF-8"));
+            System.out.printf("%s\n", output);
+        } catch (UnsupportedEncodingException e) { e.printStackTrace(); }
     }
 }

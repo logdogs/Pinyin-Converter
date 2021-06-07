@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 
 public class backend {
     
@@ -151,6 +153,42 @@ public class backend {
         }
 
         return retval;
+    }
+
+    // Now time for the big one, converting an entire text!
+    // The main idea here is as follows:
+    //      1) Clean the input (trim leading and trailing whitespace)
+    //      2) Split up the input into blocks
+    //          BLOCK: One or more syllables internally separated by numbers, externally separated by whitespace
+    //      3) Split blocks into syllables, parse the syllables, and recombine
+    //      4) Recombine the split blocks into the converted text
+    public String convert(String input) {
+        String cleaned = input.trim();
+        String[] blocks = cleaned.split("\\s");
+        ArrayList<String> convertedBlocks = new ArrayList<String>(blocks.length);    
+        try {
+            System.setOut(new PrintStream(System.out, true, "UTF-8"));
+            for (String block : blocks) {
+                String convertedBlock = "";
+                // We need to split but inclusively; that is we want to split but include the delimiters
+                String[] syllables = block.split("((?<=1)|(?<=2)|(?<=3)|(?<=4))");
+                for (int i = 0; i < syllables.length; i++) {
+                    // System.out.printf("Syllable %d of block '%s' == %s\n", i, block, syllables[i]);
+                    convertedBlock += convertSyllable(syllables[i]);
+                }
+                convertedBlocks.add(convertedBlock);
+            }
+        } catch (UnsupportedEncodingException e) { e.printStackTrace(); }
+
+        String output = "";
+        for (int i = 0; i < convertedBlocks.size(); i++) {
+            output += convertedBlocks.get(i);
+            if (i < convertedBlocks.size()-1) {
+                output += " ";
+            }
+        }
+
+        return output;
     }
 
 }
